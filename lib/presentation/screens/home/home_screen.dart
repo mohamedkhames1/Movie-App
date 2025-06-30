@@ -20,10 +20,19 @@ class HomeScreen extends StatelessWidget {
       ),
       body: CustomScrollView(
         slivers: [
-          SectionHeader(title: 'Now Showing'),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            sliver: SliverToBoxAdapter(
+              child: SectionHeader(title: 'Now Showing'),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 10)),
           const NowShowingSlider(),
           const SliverToBoxAdapter(child: SizedBox(height: 40)),
-          SectionHeader(title: 'Popular'),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            sliver: SliverToBoxAdapter(child: SectionHeader(title: 'Popular')),
+          ),
           PopularList(),
         ],
       ),

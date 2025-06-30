@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:move_app/presentation/screens/home/home_screen.dart';
-
-import '../../../presentation/screens/detail/details_screen.dart';
-
 part 'navigation_menu_state.dart';
 
 class NavigationMenuCubit extends Cubit<NavigationMenuState> {
@@ -14,10 +11,10 @@ class NavigationMenuCubit extends Cubit<NavigationMenuState> {
 
   final List<Widget> _pages = const [
     HomeScreen(),
-    // Center(
-    //   child: Text('Search Screen', style: TextStyle(color: Colors.white)),
-    // ),
-    DetailsScreen(),
+    Center(
+      child: Text('Search Screen', style: TextStyle(color: Colors.white)),
+    ),
+
     Center(
       child: Text('Wish List Screen', style: TextStyle(color: Colors.white)),
     ),
