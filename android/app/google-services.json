@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "803503947635",
+    "project_id": "movei-app-e1086",
+    "storage_bucket": "movei-app-e1086.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803503947635:android:23f74a9829612edf2d0f06",
+        "android_client_info": {
+          "package_name": "com.example.move_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDofjdFjQTQvmM_gbMPq0_y_4h8d1ZwcuI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
