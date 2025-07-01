@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../../presentation/screens/auth/login.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -36,26 +38,26 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // --- Sign Up with Email & Password ---
-  Future<void> signUp({required String email, required String password}) async {
-    emit(AuthLoading());
-    try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      emit(AuthSuccess());
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        emit(const AuthFailure('The password provided is too weak.'));
-      } else if (e.code == 'email-already-in-use') {
-        emit(const AuthFailure('An account already exists for that email.'));
-      } else {
-        emit(AuthFailure(e.message ?? 'An error occurred.'));
-      }
-    } catch (e) {
-      emit(const AuthFailure('An unexpected error occurred.'));
+Future<void> signUp({required String email, required String password}) async {
+  emit(AuthLoading());
+  try {
+    await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    emit(AuthSuccess());
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'weak-password') {
+      emit(const AuthFailure('The password provided is too weak.'));
+    } else if (e.code == 'email-already-in-use') {
+      emit(const AuthFailure('An account already exists for that email.'));
+    } else {
+      emit(AuthFailure(e.message ?? 'An error occurred.'));
     }
+  } catch (e) {
+    emit(const AuthFailure('An unexpected error occurred.'));
   }
+}
 
   // --- Login with Email & Password ---
   Future<void> login({required String email, required String password}) async {

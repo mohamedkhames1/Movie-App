@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:move_app/app/router.dart';
 import 'package:move_app/core/utils/colors.dart';
+import 'package:move_app/presentation/screens/auth/login.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: AppRouter.navigationMenu,
       // home: const SignUpView(),
-      onGenerateRoute: AppRouter.generateRoute,
+      home: const LoginView(),
+      // onGenerateRoute: AppRouter.generateRoute,
     );
   }
 }
