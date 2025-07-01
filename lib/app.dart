@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:move_app/app/router.dart';
 import 'package:move_app/core/utils/colors.dart';
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: AppRouter.navigationMenu,
       onGenerateRoute: AppRouter.generateRoute,
+      
     );
   }
 }
