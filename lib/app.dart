@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
+      initialRoute: AppRouter.navigationMenu,
+      // home: const SignUpView(),
       onGenerateRoute: AppRouter.generateRoute,
     );
   }

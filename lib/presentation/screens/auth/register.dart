@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:move_app/core/utils/colors.dart';
 import 'package:move_app/logic/cubits/auth_cubit/auth_cubit.dart';
 import 'package:move_app/logic/cubits/auth_cubit/auth_state.dart';
+import 'package:move_app/widgets/custom_auth_widgets.dart';
 
 class SignUpView extends StatelessWidget {
   const SignUpView({super.key});
