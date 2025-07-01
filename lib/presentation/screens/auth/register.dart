@@ -1,213 +1,126 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:move_app/core/utils/colors.dart';
-import 'package:move_app/presentation/screens/auth/Login.dart'; // Import your colors
+import 'package:move_app/logic/cubits/auth_cubit/auth_cubit.dart';
+import 'package:move_app/logic/cubits/auth_cubit/auth_state.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
-
+class SignUpView extends StatelessWidget {
+  const SignUpView({super.key});
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: AppColors.background,
+      body: SignUpViewBody(),
+    );
+  }
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  // State variables
-  bool _isPasswordObscured = true;
-  bool _agreedToTerms = false;
+class SignUpViewBody extends StatefulWidget {
+  const SignUpViewBody({super.key});
+  @override
+  State<SignUpViewBody> createState() => _SignUpViewBodyState();
+}
+
+class _SignUpViewBodyState extends State<SignUpViewBody> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background, // Set scaffold background color
-      // --- App Bar ---
-
-      // --- Body ---
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const SizedBox(height: 40),
-
-              // --- Header Text ---
-              const Text(
-                "Let's get started",
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Account Created!"), backgroundColor: Colors.green),
+          );
+          // TODO: Navigate to your home screen or back to login
+          Navigator.of(context).pop();
+        } else if (state is AuthFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+          );
+        }
+      },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 80, 24, 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text('Create Account',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                    color: AppColors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 48),
+            CustomTextFormField(controller: _nameController, labelText: 'Full Name'),
+            const SizedBox(height: 24),
+            CustomTextFormField(controller: _emailController, labelText: 'Email Address'),
+            const SizedBox(height: 24),
+            CustomTextFormField(
+              controller: _passwordController,
+              labelText: 'Password',
+              obscureText: !_isPasswordVisible,
+              suffixIcon: IconButton(
+                icon: Icon(
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: AppColors.white.withOpacity(0.7)),
+                onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
               ),
-              const SizedBox(height: 8),
-              const Text(
-                "The latest movies and series\nare here",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  height: 1.5,
-                ),
+            ),
+            const SizedBox(height: 32),
+            BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, state) {
+                if (state is AuthLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return CustomPrimaryButton(
+                  text: 'Sign Up',
+                  onPressed: () => context.read<AuthCubit>().signUp(
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                      ),
+                );
+              },
+            ),
+            const SizedBox(height: 24),
+            Row(children: [
+              Expanded(child: Divider(color: AppColors.white.withOpacity(0.5))),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text('OR', style: TextStyle(color: AppColors.white.withOpacity(0.7))),
               ),
-              const SizedBox(height: 40),
-
-              // --- Full Name Text Field ---
-              TextFormField(
-                initialValue: 'Tiffany',
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Full Name',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.white,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: AppColors.primary),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24.0),
-
-              // --- Email Text Field ---
-              TextFormField(
-                initialValue: 'tiffanyjearsey@gmail.com',
-                style: const TextStyle(color: Colors.white),
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: 'Email Address',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.white,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: AppColors.primary),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24.0),
-
-              // --- Password Text Field ---
-              TextFormField(
-                initialValue: 'password123',
-                obscureText: _isPasswordObscured,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: const TextStyle(color:Colors.white),
-                  filled: true,
-                  fillColor: Colors.white,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: AppColors.primary),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isPasswordObscured ? Icons.visibility_off : Icons.visibility,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordObscured = !_isPasswordObscured;
-                      });
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(height: 25.0),
-              
-              // --- Terms and Conditions Checkbox ---
-              _buildTermsAndConditions(),
-              const SizedBox(height: 40.0),
-
-              // --- Sign Up Button ---
-              ElevatedButton(
-                onPressed: () {
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 18.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                ),
-                child: const Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white, // Changed color for better contrast on cyan
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0), // Add some padding at the bottom
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Helper widget for the terms row to keep the build method clean
-  Widget _buildTermsAndConditions() {
-    return Row(
-      children: [
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: Checkbox(
-            value: _agreedToTerms,
-            onChanged: (bool? value) {
-              setState(() {
-                _agreedToTerms = value ?? false;
-              });
-            },
-            activeColor: AppColors.primary,
-            side: const BorderSide(color: Colors.white, width: 2),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            checkColor: AppColors.background,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: RichText(
-            text: TextSpan(
-              style: const TextStyle(fontSize: 14, color: Colors.white, height: 1.5),
+              Expanded(child: Divider(color: AppColors.white.withOpacity(0.5))),
+            ]),
+            const SizedBox(height: 24),
+            CustomSocialButton(
+              onPressed: () => context.read<AuthCubit>().signInWithGoogle(),
+              iconPath: 'assets/icons/google_logo.png', // Your asset path
+              text: 'Sign up with Google',
+            ),
+             const SizedBox(height: 24),
+            // Button to navigate back to Login
+             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const TextSpan(text: 'I agree to the '),
-                TextSpan(
-                  text: 'Terms and Services',
-                  style: const TextStyle(color: AppColors.primary),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      // TODO: Navigate to Terms and Services page
-                    },
-                ),
-                const TextSpan(text: ' and '),
-                TextSpan(
-                  text: 'Privacy Policy',
-                  style: const TextStyle(color: AppColors.primary),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      // TODO: Navigate to Privacy Policy page
-                    },
+                Text("Already have an account? ", style: TextStyle(color: AppColors.white.withOpacity(0.7))),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: const Text("Login", style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
                 ),
               ],
-            ),
-          ),
+            )
+          ],
         ),
-      ],
+      ),
     );
   }
 }

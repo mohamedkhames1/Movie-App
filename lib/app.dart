@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:move_app/app/router.dart';
 import 'package:move_app/core/utils/colors.dart';
 
-import 'package:move_app/presentation/screens/auth/Login.dart';
-import 'package:move_app/presentation/screens/auth/register.dart';
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -22,7 +19,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRouter.generateRoute,
-      
     );
   }
 }
